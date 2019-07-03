@@ -6,3 +6,4 @@ my stupid boss.
 create a branch is quick.
 Git is fancy.
 Creating a new branch is quick and simple.
+branch manage test.
