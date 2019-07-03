@@ -1,0 +1,240 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Result - Chatbot</title>
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+            background: url("../static/bg2.jpg");
+            background-size: 130% 120%;
+            color: black;
+        }
+
+        #wrap {
+            position: relative;
+            left: 300px;
+            top: 0;
+            width: 1304px;
+            height: 768px;
+            margin: 0 auto;
+        }
+
+        .output {
+            position: absolute;
+            left: 6px;
+            top: 45px;
+            width: 509px;
+            height: 528px;
+            border-top: 25px solid rgb(92, 177, 247);
+            background: url("../static/chatbg.jpg");
+            opacity: 1.7;
+        }
+
+        .output .chat-show1 {
+            position: relative;
+            left: 40px;
+        }
+
+        .chat-show1:before {
+            content: "";
+            position: absolute;
+            left: -41px;
+            display: block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: url("../static/look1.jpg");
+            background-size: 100% 100%;
+        }
+
+        .output .chat-show2 {
+            position: relative;
+            left: 198px;
+            background: rgb(92, 247, 113);
+        }
+
+        .chat-show2:before {
+            content: "";
+            position: absolute;
+            right: -39px;
+            display: block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: url("../static/look2.jpg");
+            background-size: 100% 100%;
+        }
+
+        .output-top {
+            position: absolute;
+            top: -40px;
+            width: 100%;
+            height: 40px;
+            background: rgb(252, 132, 21);
+            border-radius: 6%;
+            color: white;
+        }
+
+        .chat-name {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .side {
+            position: absolute;
+            left: 515px;
+            top: 30px;
+            width: 128px;
+            height: 569px;
+            background: url("../static/sidebg.jpg");
+            border-radius: 2%;
+            background-size: 100% 100%;
+        }
+
+        .input {
+            position: absolute;
+            left: 5px;
+            bottom: 68px;
+            width: 640px;
+            height: 103px;
+            background: rgba(255, 255, 255, 0.6);
+            font-size: 15px;
+            outline: none;
+            border-radius: 5%;
+        }
+
+        textarea {
+            opacity: 0.4;
+            color: black;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .text {
+            width: 505px;
+            height: 105px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 8%;
+        }
+
+        .sub {
+            position: absolute;
+            top: 20px;
+            right: 10px;
+            width: 100px;
+            height: 69px;
+            border-radius: 20%;
+            background: rgb(255, 255, 255);
+            outline: none;
+        }
+
+        p {
+            background: pink;
+            height: 40px;
+            width: 50%;
+            border-radius: 20%;
+            padding-left: 17px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrap">
+        <div class="output">
+            <div class="output-top">
+                <div class="chat-name">
+                    <h3>小进进</h3>
+                </div>
+            </div>
+            <div class="chat-output">
+                <p class="chat-show1">啦啦啦啦啦啦啦啦</p>
+                <p class="chat-show2">哈哈哈哈哈哈哈哈</p>
+            </div>
+        </div>
+        <div class="side"></div>
+        <div class="input">
+            <form>
+                <textarea name="question" class="text" id="text1"></textarea>&nbsp;
+                <button type="button" value="提交" class="sub" id="btn">发送</button>
+            </form>
+        </div>
+    </div>
+    <canvas id="test" width="300px" height="400px"
+        style="position:fixed;right:0px;bottom:-10px;pointer-events:none;z-index:-10000;opacity: 0.7;"></canvas>
+    <script type="text/javascript">
+        //获取相关元素
+        var obtn = document.querySelector("#btn");
+        var text_length = document.querySelector("#text1");
+        var text_out = document.querySelector(".chat-output");
+        var text_input = document.querySelector("#text1");
+        var times = 0; //记录消息条数
+        obtn.onclick = function () { //点击事件处理输入的内容
+            times++; //消息数增加
+            if (times >= 8) {
+                times = 0;
+                text_out.innerHTML = "";
+            }
+            var value1 = document.querySelector("#text1").value; //获取相关元素
+            var op = document.createElement('p');
+            op.className = "chat-show2";
+            op.innerText = value1;
+            text_out.appendChild(op);
+            text_input.value = "";
+            //enter键触发按钮点击事件      
+            document.onkeydown = function () {
+                if (event.keyCode == 13) {
+                    obtn.click();
+                    return false;
+                }
+            }
+            //响应数据处理
+            var str = { 'question': value1};
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/result/", true);
+            xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            var data = JSON.stringify(str);
+            xhr.send(data);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4)
+                    if (xhr.status >= 200 && xhr.status < 300 || xhr.status == 304) {
+                        var text = xhr.responseText;
+                        var value = JSON.parse(text);                       
+                        times++;
+                        if (times >= 8) {
+                            times = 0;
+                            text_out.innerHTML = "";
+                        }
+                        var op = document.createElement('p');
+                        op.className = "chat-show1";
+                        op.innerText = value['answer'];
+                        text_out.appendChild(op);
+                    }
+            }
+        }
+    </script>
+    <script type="text/javascript" charset="utf-8" src="https://files.cnblogs.com/files/liuzhou1/L2Dwidget.0.min.js">
+    </script>
+    <script type="text/javascript" charset="utf-8" src="https://files.cnblogs.com/files/liuzhou1/L2Dwidget.min.js">
+    </script>
+    <script type="text/javascript">
+        L2Dwidget.init({
+            "display": {
+                "superSample": 2,
+                "width": 200,
+                "height": 400,
+                "opacity": 0.3,
+                "position": "right",
+                "hOffset": 0,
+                "vOffset": 0
+            }
+        });
+    </script>
+</body>
+
+</html>
