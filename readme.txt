@@ -5,3 +5,4 @@ Git tracks changes  of files.
 my stupid boss.
 create a branch is quick.
 Git is fancy.
+Creating a new branch is quick AND simple.
