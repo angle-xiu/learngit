@@ -9,4 +9,5 @@ Creating a new branch is quick and simple.
 branch manage test.
 bug is over.
 bug branch manage.
+The partner is good.
 
